@@ -2,78 +2,66 @@ package com.example.serverapp.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.serverapp.ui.viewModel.ServerViewModel
 
 
+@Composable
+fun ServerApp(viewModel: ServerViewModel) {
+    var serverPort by remember { mutableStateOf("8080") }
+    val isServerRunning by viewModel.isServerRunning.collectAsState()
 
-
-//@Composable
-//fun ServerScreen( viewModel: ServerViewModel) {//
-//    var port by remember { mutableStateOf("") }
-//    val isRunning by remember { mutableStateOf(false) }
-//
-//    Column(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .padding(16.dp),
-//        verticalArrangement = Arrangement.Center,
-//        horizontalAlignment = Alignment.CenterHorizontally
-//    ) {
-//        TextField(
-//            value = port,
-//            onValueChange = { port = it },
-//            label = { Text("Port") },
-//            modifier = Modifier.fillMaxWidth()
-//        )
-//        Spacer(modifier = Modifier.height(8.dp))
-//        Row {
-//            Button(
-//                onClick = {
-//                    viewModel.saveConfig(port = port)
-//                },
-//                modifier = Modifier.weight(1f)
-//            ) {
-//                Text("Config")
-//            }
-//            Spacer(modifier = Modifier.width(8.dp))
-//            Button(
-//                onClick = {
-////                    isRunning = !isRunning
-//                    if (isRunning) {
-//                        viewModel.startServer()
-//                    } else {
-//                        viewModel.stopServer()
-//                    }
-//                },
-//                modifier = Modifier.weight(1f)
-//            ) {
-//                Text(if (isRunning) "Stop" else "Start")
-//            }
-//        }
-//        Spacer(modifier = Modifier.height(16.dp))
-//        Button(
-//            onClick = {
-//                viewModel.showLogs()
-//            }
-//        ) {
-//            Text("Logs")
-//        }
-//    }
-//}
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        androidx.compose.material.TextField(
+            value = serverPort,
+            onValueChange = { serverPort = it },
+            label = { androidx.compose.material.Text("Server Port") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        androidx.compose.material.Button(
+            onClick = {
+                viewModel.startServer(serverPort.toInt())
+            },
+            enabled = !isServerRunning,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            androidx.compose.material.Text("Start Server")
+        }
+        androidx.compose.material.Button(
+            onClick = {
+                viewModel.stopServer()
+            },
+            enabled = isServerRunning,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            androidx.compose.material.Text("Stop Server")
+        }
+        androidx.compose.material.Button(
+            onClick = {
+                viewModel.fetchLogs()
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            androidx.compose.material.Text("View Logs")
+        }
+        val logs by viewModel.logs.collectAsState()
+        logs.forEach { log ->
+            androidx.compose.material.Text(text = log.message)
+        }
+    }
+}
