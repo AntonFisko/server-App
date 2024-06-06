@@ -1,11 +1,13 @@
 package com.example.serverapp.ui.viewModel
 
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.serverapp.ktor.Server
 import com.example.serverapp.room.LogDao
 import com.example.serverapp.room.LogEntry
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -19,18 +21,27 @@ class ServerViewModel(private val logDao: LogDao) : ViewModel() {
     val logs = _logs.asStateFlow()
 
     fun startServer(port: Int) {
-        server = Server(port).apply {
-            start()
+        if (server == null) {
+            viewModelScope.launch(Dispatchers.IO) {
+                server = Server(port).apply {
+                    start()
+                }
+                _isServerRunning.value = true
+                addLog("Server started on port $port")
+                Log.d("Fisko", "Server started on port $port")
+            }
+        } else {
+            Log.d("Fisko", "Server is already running")
         }
-        _isServerRunning.value = true
-        addLog("Server started on port $port")
     }
 
     fun stopServer() {
-        server?.stop()
-        server = null
-        _isServerRunning.value = false
-        addLog("Server stopped")
+        viewModelScope.launch(Dispatchers.IO) {
+            server?.stop()
+            server = null
+            _isServerRunning.value = false
+            addLog("Server stopped")
+        }
     }
 
     fun fetchLogs() {
@@ -40,7 +51,7 @@ class ServerViewModel(private val logDao: LogDao) : ViewModel() {
     }
 
     private fun addLog(message: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             logDao.insertLog(LogEntry(0, System.currentTimeMillis(), message))
             fetchLogs()
         }
