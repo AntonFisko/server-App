@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -27,41 +30,41 @@ fun ServerApp(viewModel: ServerViewModel) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        androidx.compose.material.TextField(
+        TextField(
             value = serverPort,
             onValueChange = { serverPort = it },
-            label = { androidx.compose.material.Text("Server Port") },
+            label = { Text("Server Port") },
             modifier = Modifier.fillMaxWidth()
         )
-        androidx.compose.material.Button(
+        Button(
             onClick = {
                 viewModel.startServer(serverPort.toInt())
             },
             enabled = !isServerRunning,
             modifier = Modifier.fillMaxWidth()
         ) {
-            androidx.compose.material.Text("Start Server")
+            Text("Start Server")
         }
-        androidx.compose.material.Button(
+        Button(
             onClick = {
                 viewModel.stopServer()
             },
             enabled = isServerRunning,
             modifier = Modifier.fillMaxWidth()
         ) {
-            androidx.compose.material.Text("Stop Server")
+            Text("Stop Server")
         }
-        androidx.compose.material.Button(
+        Button(
             onClick = {
                 viewModel.fetchLogs()
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            androidx.compose.material.Text("View Logs")
+            Text("View Logs")
         }
         val logs by viewModel.logs.collectAsState()
         logs.forEach { log ->
-            androidx.compose.material.Text(text = log.message)
+            Text(text = log.message)
         }
     }
 }
