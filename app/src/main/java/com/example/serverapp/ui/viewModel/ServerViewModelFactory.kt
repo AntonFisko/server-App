@@ -6,14 +6,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
 import com.example.serverapp.room.AppDatabase
 
-class ServerViewModelFactory(private val context: android.content.Context) :
-    ViewModelProvider.Factory {
+class ServerViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val db = Room.databaseBuilder(
             context,
             AppDatabase::class.java, "log-database"
         ).build()
         @Suppress("UNCHECKED_CAST")
-        return ServerViewModel(db.logDao()) as T
+        return ServerViewModel(context, db.logDao()) as T
     }
 }

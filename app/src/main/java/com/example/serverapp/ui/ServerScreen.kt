@@ -1,5 +1,6 @@
 package com.example.serverapp.ui
 
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,11 +19,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.serverapp.ui.viewModel.ServerViewModel
 
-
 @Composable
 fun ServerApp(viewModel: ServerViewModel) {
     var serverPort by remember { mutableStateOf("8080") }
     val isServerRunning by viewModel.isServerRunning.collectAsState()
+    val logs by viewModel.logs.collectAsState()
+    val connectedClients by viewModel.connectedClients.collectAsState()
 
     Column(
         modifier = Modifier
@@ -62,7 +64,13 @@ fun ServerApp(viewModel: ServerViewModel) {
         ) {
             Text("View Logs")
         }
-        val logs by viewModel.logs.collectAsState()
+
+        Text("Connected Clients:")
+        connectedClients.forEach { client ->
+            Text(text = client)
+        }
+
+        Text("Logs:")
         logs.forEach { log ->
             Text(text = log.message)
         }
