@@ -4,8 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import com.example.serverapp.ktor.ServerViewModel
 import com.example.serverapp.ui.ServerApp
-import com.example.serverapp.ui.viewModel.ServerViewModel
 import com.example.serverapp.ui.viewModel.ServerViewModelFactory
 
 class MainActivity : ComponentActivity() {

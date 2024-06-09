@@ -1,6 +1,5 @@
 package com.example.serverapp.ui
 
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.serverapp.ui.viewModel.ServerViewModel
+import com.example.serverapp.ktor.ServerViewModel
 
 @Composable
 fun ServerApp(viewModel: ServerViewModel) {
@@ -47,30 +46,6 @@ fun ServerApp(viewModel: ServerViewModel) {
         ) {
             Text("Start Server")
         }
-        Button(
-            onClick = {
-                viewModel.stopServer()
-            },
-            enabled = isServerRunning,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Stop Server")
-        }
-        Button(
-            onClick = {
-                viewModel.fetchLogs()
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("View Logs")
-        }
-
-        Text("Connected Clients:")
-        connectedClients.forEach { client ->
-            Text(text = client)
-        }
-
-        Text("Logs:")
         logs.forEach { log ->
             Text(text = log.message)
         }

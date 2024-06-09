@@ -60,7 +60,14 @@ class Server(
             session.incoming.consumeEach { frame ->
                 if (frame is Frame.Text) {
                     val receivedText = frame.readText()
-                    val command = Json.decodeFromString<GestureCommand>(receivedText)
+                    println("Received message: $receivedText") // Логирование полученного сообщения
+
+                    val command = try {
+                        Json.decodeFromString<GestureCommand>(receivedText)
+                    } catch (e: Exception) {
+                        println("Failed to decode message: ${e.localizedMessage}")
+                        return@consumeEach
+                    }
 
                     // Обработка полученной команды жестов
                     val result = processGestureCommand(command, session)
