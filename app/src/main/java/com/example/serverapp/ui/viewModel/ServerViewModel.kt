@@ -1,9 +1,10 @@
-package com.example.serverapp.ktor
+package com.example.serverapp.ui.viewModel
 
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.serverapp.ktor.Server
 import com.example.serverapp.room.LogDao
 import com.example.serverapp.room.LogEntry
 import kotlinx.coroutines.Dispatchers
@@ -40,6 +41,9 @@ class ServerViewModel(private val context: Context, private val logDao: LogDao) 
                         connectedClientsMap.remove(clientInfo)
                         updateConnectedClients()
                         addLog("Client disconnected: $clientInfo")
+                    },
+                    onLog = { message ->
+                        addLog(message)
                     }
                 ).apply {
                     start()

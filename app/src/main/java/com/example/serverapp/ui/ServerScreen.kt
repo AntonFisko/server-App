@@ -16,7 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.serverapp.ktor.ServerViewModel
+import com.example.serverapp.ui.viewModel.ServerViewModel
 
 @Composable
 fun ServerApp(viewModel: ServerViewModel) {

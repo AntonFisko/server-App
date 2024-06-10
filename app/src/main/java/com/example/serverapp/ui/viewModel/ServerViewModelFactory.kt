@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
-import com.example.serverapp.ktor.ServerViewModel
 import com.example.serverapp.room.AppDatabase
 
 class ServerViewModelFactory(private val context: Context) : ViewModelProvider.Factory {

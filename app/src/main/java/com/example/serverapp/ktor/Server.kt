@@ -17,18 +17,21 @@ import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.isActive
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.time.Duration
 
-data class GestureCommand(val type: String, val duration: Long)
+@Serializable
+data class GestureCommand(val type: String, val duration: Long, val message: String? = null)
 data class GestureResult(val status: String, val message: String)
 
 class Server(
     private val port: Int,
     private val context: Context,
     private val onClientConnected: (String) -> Unit,
-    private val onClientDisconnected: (String) -> Unit
+    private val onClientDisconnected: (String) -> Unit,
+    private val onLog: (String) -> Unit
 ) {
     private val server = embeddedServer(Netty, port) {
         install(WebSockets) {
@@ -60,24 +63,42 @@ class Server(
             session.incoming.consumeEach { frame ->
                 if (frame is Frame.Text) {
                     val receivedText = frame.readText()
-                    println("Received message: $receivedText") // Логирование полученного сообщения
+                    onLog("Received message: $receivedText") // Log received message
 
                     val command = try {
                         Json.decodeFromString<GestureCommand>(receivedText)
                     } catch (e: Exception) {
-                        println("Failed to decode message: ${e.localizedMessage}")
+                        onLog("Failed to decode message: ${e.localizedMessage}")
                         return@consumeEach
                     }
 
-                    // Обработка полученной команды жестов
-                    val result = processGestureCommand(command, session)
-
-                    // Отправка результата обратно клиенту
-                    val resultJson = Json.encodeToString(result)
-                    session.outgoing.send(Frame.Text(resultJson))
+                    // Handle received gesture command and send new commands
+                    handleReceivedCommand(command, session)
                 }
             }
         }
+    }
+
+    private suspend fun handleReceivedCommand(command: GestureCommand, session: DefaultWebSocketServerSession) {
+        when (command.type) {
+            "RESULT" -> {
+                // Handle the result from the client
+                onLog("Client result: ${command.message}")
+            }
+            else -> {
+                // Send new gesture commands to the client
+                val newCommand = generateGestureCommand()
+                val commandJson = Json.encodeToString(newCommand)
+                session.outgoing.send(Frame.Text(commandJson))
+            }
+        }
+    }
+
+    private fun generateGestureCommand(): GestureCommand {
+        // Generate a random gesture command (example)
+        val commandType = if (Math.random() > 0.5) "SWIPE_UP" else "SWIPE_DOWN"
+        val duration = (500..1500).random().toLong()
+        return GestureCommand(commandType, duration)
     }
 
     fun start() {
@@ -95,31 +116,6 @@ class Server(
             println("Server stopped")
         } catch (e: Exception) {
             println("Failed to stop server: ${e.localizedMessage}")
-        }
-    }
-
-    private suspend fun processGestureCommand(command: GestureCommand, session: DefaultWebSocketServerSession): GestureResult {
-        return when (command.type) {
-            "CHROME_OPENED" -> {
-                // Отправка команд жестов клиенту
-                session.sendGestureCommands()
-                GestureResult("SUCCESS", "Chrome opened detected, gesture commands sent")
-            }
-            "SWIPE_UP" -> GestureResult("SUCCESS", "Swipe up executed for ${command.duration}ms")
-            "SWIPE_DOWN" -> GestureResult("SUCCESS", "Swipe down executed for ${command.duration}ms")
-            else -> GestureResult("ERROR", "Unknown gesture command")
-        }
-    }
-
-    private suspend fun DefaultWebSocketServerSession.sendGestureCommands() {
-        // Пример отправки команд жестов
-        val commands = listOf(
-            GestureCommand("SWIPE_UP", 1000),
-            GestureCommand("SWIPE_DOWN", 1000)
-        )
-        commands.forEach { command ->
-            val commandJson = Json.encodeToString(command)
-            outgoing.send(Frame.Text(commandJson))
         }
     }
 }
