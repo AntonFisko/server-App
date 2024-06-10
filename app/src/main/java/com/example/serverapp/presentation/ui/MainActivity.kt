@@ -1,12 +1,11 @@
-package com.example.serverapp
+package com.example.serverapp.presentation.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import com.example.serverapp.ui.ServerApp
-import com.example.serverapp.ui.viewModel.ServerViewModel
-import com.example.serverapp.ui.viewModel.ServerViewModelFactory
+import com.example.serverapp.presentation.viewModel.ServerViewModel
+import com.example.serverapp.presentation.viewModel.ServerViewModelFactory
 
 class MainActivity : ComponentActivity() {
     private val serverViewModel: ServerViewModel by viewModels {

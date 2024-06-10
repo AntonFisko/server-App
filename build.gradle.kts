@@ -1,8 +1,6 @@
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.jetbrains.kotlin.android) apply false
-//    id("dagger.hilt.android.plugin") version "2.41"
-//    id("dagger.hilt.android.plugin") version "2.41" apply false
 }
 
 buildscript {

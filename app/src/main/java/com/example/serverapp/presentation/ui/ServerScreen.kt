@@ -1,4 +1,4 @@
-package com.example.serverapp.ui
+package com.example.serverapp.presentation.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,7 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.serverapp.ui.viewModel.ServerViewModel
+import com.example.serverapp.presentation.viewModel.ServerViewModel
 
 @Composable
 fun ServerApp(viewModel: ServerViewModel) {

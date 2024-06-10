@@ -1,4 +1,4 @@
-package com.example.serverapp.ktor
+package com.example.serverapp.data.ktor
 
 import android.content.Context
 import io.ktor.serialization.kotlinx.json.json

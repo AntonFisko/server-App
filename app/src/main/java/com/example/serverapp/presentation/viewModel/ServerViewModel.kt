@@ -1,12 +1,12 @@
-package com.example.serverapp.ui.viewModel
+package com.example.serverapp.presentation.viewModel
 
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.serverapp.ktor.Server
-import com.example.serverapp.room.LogDao
-import com.example.serverapp.room.LogEntry
+import com.example.serverapp.data.ktor.Server
+import com.example.serverapp.data.room.LogDao
+import com.example.serverapp.data.room.LogEntry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
